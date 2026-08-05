@@ -43,10 +43,40 @@ def limpar_execucoes(engajamento_execucoes):
 
     return int(engajamento_execucoes)
 
+def limpar_generos(generos):    
+    if isinstance(generos, str):
+        generos = [generos]
+
+    generos_pilha = []
+    pilha = list(generos)
+
+    while pilha:
+        elemento = pilha.pop()
+
+        if isinstance(elemento, list):
+            pilha.extend(elemento)
+
+        elif isinstance(elemento, str) and elemento not in generos_pilha:
+            generos_pilha.append(elemento)
+
+    generos_pilha = sorted(generos_pilha)
+    return generos_pilha
+
+def limpar_duracao(duracao_seg):
+    if duracao_seg is None:
+        return 0
+    return int(duracao_seg)
+
+class Catalogo:
+    def __init__(self, caminho_json: str):  
+        with open(caminho_json, encoding="utf-8") as f:
+            dados = json.load(f)
+
+        self._conteudos = {}
+        for i in dados["conteudos"]:
+            self._conteudos[i["id"]] = i
 
         
-def __init__(self, caminho_json: str): 
-
     # --- usuários e playlists ---
     def listar_usuarios(self) -> list[str]: ...
     def buscar_usuario_por_nome(self, nome: str) -> str | None: ...
@@ -55,15 +85,53 @@ def __init__(self, caminho_json: str):
     def intersecao_playlists(self, usuario_ids: list[str]) -> list[str]: ...
 
     # --- dados de um conteúdo ---
-    def rating_de(self, conteudo_id: str) -> float | None: ...
+
+    def rating_de(self, conteudo_id: str) -> float | None: 
+         conteudo = self._conteudos.get(conteudo_id)
+
+         if conteudo is None:
+             return None
+
+         return verificar_rating(conteudo.get("rating"))
+    
+
     def duracao_total_de(self, conteudo_id: str) -> int | None: ...
-    def generos_de(self, conteudo_id: str) -> list[str] | None: ...
+        
+
+
+    def generos_de(self, conteudo_id: str) -> list[str] | None: 
+        conteudo = self._conteudos.get(conteudo_id)
+
+        if conteudo is None:
+            return None
+
+        return limpar_generos(conteudo.get("generos"))
+        
+
+
     def plataformas_de(self, conteudo_id: str) -> list[str] | None: ...
-    def data_adicionado_de(self, conteudo_id: str) -> str | None: ...
+        
+
+
+
+    def data_adicionado_de(self, conteudo_id: str) -> str | None: 
+        conteudo = self._conteudos.get(conteudo_id)
+
+        if conteudo is None:
+            return None
+
+        return limpar_data(conteudo.get("data_adicionado"))
+
+
     def execucoes_de(self, conteudo_id: str) -> int | None: ...
+
+
     def conteudos_do_genero(self, genero: str) -> list[str]: ...
+
+
 
     # --- fila de reprodução ---
     def enfileirar(self, conteudo_id: str) -> bool: ...
     def proximo(self) -> str | None: ...
     def fila_atual(self) -> list[str]: ...
+
