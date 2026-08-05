@@ -115,3 +115,32 @@ None
 >>> print(c.generos_de("t000009"))
 ['Smooth Jazz', 'Soul']
 ```
+
+Novamente, fiz outra alteração no **_ _init_ _**. Dessa vez para fazer as análises que envolvem os usuários e playlists. Assim, criei um outros dois dicionários que usem como **items** o nome e o id. O primeiro é utilizado para a busca de usuário por id, e o segundo para os demais módulos do projeto.
+
+```python
+self._id_nome = {}
+        for i in dados["usuarios"]:
+            self._id_nome[i["nome"].lower()] = i["id"] 
+```
+```python
+        self._usuarios = {}
+        for i in dados["usuarios"]:
+            self._usuarios[i["id"]] = i
+```
+
+Após isso, preenchi os módulos definidos para usuários e playlist.
+
+Novamente fazendo alguns testes no modo interativo: 
+```python
+Desktop\miniprojeto\miniprojeto-1> python3 -i catalogo.py
+>>> c = Catalogo("catalogo_dev.json")
+>>> print(c.listar_usuarios())
+['Ayres', 'Bea', 'Bia', 'Cecilia', 'Cecilia de Tiago', 'Clara', 'Daniel', 'Davi', 'Eduardo', 'Emyle', 'Felipe', 'Guilherme', 'Harry', 'Joaquim', 'João', 'Kruta', 'Luciana', 'Luigi', 'Luiz', 'Marcus', 'Matheus', 'Miguel', 'Mikael', 'Nicholas', 'Nicole', 'Pierre', 'Puca', 'Quintela', 'Ralf', 'Sergio', 'Sofia', 'Tiago', 'Uchoa']
+>>> print(c.buscar_usuario_por_nome("ayres"))
+u01
+>>> print(c.playlist_de("u01"))
+['t000009', 't000010', 't000011', 't000012', 't000013', 't000014', 't000015', 't000016', 't000017', 't000004', 't000048', 't000001', 't000052', 't000053', 't000050', 't000046', 't000047', 't000027', 't000044', 't000037', 't000040', 't000054', 't000051', 't000021', 't000020', 't000039', 't000056', 't000005', 't000057', 't000059', 't000042', 't000019', 't000007', 't000043', 't000000', 't000018', 't000049', 't000002', 't000024', 't000006', 't000055', 't000038', 't000031', 't000032', 't000025', 't000041', 't000058', 't000034', 't000028']
+>>> print(c.conteudo_na_posicao("u01", 0))
+t000009
+```

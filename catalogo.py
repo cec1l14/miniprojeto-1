@@ -69,20 +69,55 @@ def limpar_duracao(duracao_seg):
 
 class Catalogo:
     def __init__(self, caminho_json: str):  
-        with open(caminho_json, encoding="utf-8") as f:
-            dados = json.load(f)
+        with open(caminho_json, encoding="utf-8") as t:
+            dados = json.load(t)
 
         self._conteudos = {}
         for i in dados["conteudos"]:
             self._conteudos[i["id"]] = i
 
+        self._id_nome = {}
+        for i in dados["usuarios"]:
+            self._id_nome[i["nome"].lower()] = i["id"] 
+
+        self._usuarios = {}
+        for i in dados["usuarios"]:
+            self._usuarios[i["id"]] = i
         
     # --- usuários e playlists ---
-    def listar_usuarios(self) -> list[str]: ...
-    def buscar_usuario_por_nome(self, nome: str) -> str | None: ...
-    def playlist_de(self, usuario_id: str) -> list[str] | None: ...
-    def conteudo_na_posicao(self, usuario_id: str, posicao: int) -> str | None: ...
-    def intersecao_playlists(self, usuario_ids: list[str]) -> list[str]: ...
+    
+    def listar_usuarios(self) -> list[str]: 
+        nomes = []
+        for i in self._usuarios.values():
+            nomes.append(i["nome"])
+
+        return sorted(nomes)
+    
+    def buscar_usuario_por_nome(self, nome: str) -> str | None: 
+        return self._id_nome.get(nome.lower())
+
+    def playlist_de(self, usuario_id: str) -> list[str] | None: 
+        usuario = self._usuarios.get(usuario_id)
+
+        if usuario is None:
+            return None
+
+        return usuario["playlist"]
+
+
+    def conteudo_na_posicao(self, usuario_id: str, posicao: int) -> str | None: 
+        conteudo_playlist = self.playlist_de(usuario_id)
+
+        if (conteudo_playlist is None) or (posicao < 0) or (posicao > len(conteudo_playlist)):
+            return None
+
+        return conteudo_playlist[posicao]
+
+
+    def intersecao_playlists(self, usuario_ids: list[str]) -> list[str]: 
+        ...
+
+
 
     # --- dados de um conteúdo ---
 
