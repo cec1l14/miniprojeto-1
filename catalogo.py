@@ -125,8 +125,23 @@ class Catalogo:
 
 
     def intersecao_playlists(self, usuario_ids: list[str]) -> list[str]: 
-        ...
+        playlists = []
 
+        for i in usuario_ids:
+            playlist = self.playlist_de(i)
+
+            if playlist is None:
+                return []
+
+            playlists.append(set(playlist))
+
+        intersecao = playlists[0]
+
+        for i in playlists[1:]:
+            intersecao = intersecao.intersection(i)
+
+        return sorted(intersecao)
+        
 
     # --- dados de um conteúdo ---
 
