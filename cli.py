@@ -44,12 +44,29 @@ TrilhaSonora
             nome = input("Nome do usuário: ")
             usuario_id = catalogo.buscar_usuario_por_nome(nome)
 
-            playlist = catalogo.playlist_de(usuario_id)
-            for i in range(len(playlist)):
-                print(f"{i}. {playlist[i]}")
+            if usuario_id is None:
+                print("Usuário não encontrado.")
+            else:
+                playlist = catalogo.playlist_de(usuario_id)
+                for i in range(len(playlist)):
+                    playlist_nome = catalogo.descricao_de(playlist[i])
+                    print(f"{i+1}. {playlist_nome}")
 
         elif pedido == 3:
-            pass
+            nome = input("Nome do usuário: ")
+            id_us = catalogo.buscar_usuario_por_nome(nome)
+
+            if id_us is None:
+                print("Usuário não encontrado.")
+            else:
+                playlist = catalogo.playlist_de(id_us)
+                print(f"Playlist de {nome} tem {len(playlist)} itens (posições de 1 a {len(playlist)}).")
+
+                posicao = int(input("Posição: ")) 
+
+                result = catalogo.conteudo_na_posicao(id_us, (posicao-1))
+
+                print(f"Posição {posicao} de {nome}: {catalogo.descricao_de(result)}")
 
         elif pedido == 4:
             pass
@@ -74,12 +91,25 @@ TrilhaSonora
     
         elif pedido == 7:
             id_fila = input("ID do conteúdo para enfileirar (ex.: t000000): ")
+            resultado = catalogo.enfileirar(id_fila)
+
+            if resultado:
+                print(f"Enfileirado: {catalogo.descricao_de(id_fila)}")
 
         elif pedido == 8:
             musica = catalogo.proximo()
 
             if musica is None:
                 print("Fila vazia.")
+            else:
+                print(f"Tocando: {catalogo.descricao_de(musica)}")
+
 
         elif pedido == 9:
-            print(catalogo.fila_atual())
+            fila = catalogo.fila_atual()
+
+            if not fila:
+                print("Fila vazia.")
+            else:
+                for i in fila:
+                    print(catalogo.descricao_de(i))

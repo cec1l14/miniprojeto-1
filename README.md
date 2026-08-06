@@ -146,3 +146,15 @@ t000009
 ```
 
 Após isso, resolvi iniciar a elaboração de **cli.py**. Para tal, importei a classe Catalogo no início do arquivo, fiz uso de um **while True** e comecei a analisar cada opção individualmente.
+
+Retomando **catalogo.py**, resolvi criar um método à parte (também recomendado pelas instruções da atividade) para converter o id em uma descrição compreensível para o usuário.
+```python
+
+def descricao_de(self, conteudo_id: str) -> str | None:
+    conteudo = self._conteudos.get(conteudo_id)
+
+    if conteudo is None:
+        return None
+
+    return f"{conteudo['titulo']} - {conteudo['artista']} ({conteudo['tipo']})"
+```

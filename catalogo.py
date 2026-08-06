@@ -89,9 +89,11 @@ class Catalogo:
         self._usuarios = {}
         for i in dados["usuarios"]:
             self._usuarios[i["id"]] = i
+
         
     # --- usuários e playlists ---
     
+
     def listar_usuarios(self) -> list[str]: 
         nomes = []
         for i in self._usuarios.values():
@@ -124,7 +126,6 @@ class Catalogo:
 
     def intersecao_playlists(self, usuario_ids: list[str]) -> list[str]: 
         ...
-
 
 
     # --- dados de um conteúdo ---
@@ -174,7 +175,7 @@ class Catalogo:
             return None
 
         return sorted(conteudo.get("plataformas", [])) # agora ta certo
-        
+           
 
 
     def data_adicionado_de(self, conteudo_id: str) -> str | None: 
@@ -207,7 +208,6 @@ class Catalogo:
         return resultado
 
 
-
     # --- fila de reprodução ---
 
 
@@ -229,3 +229,14 @@ class Catalogo:
         
     def fila_atual(self) -> list[str]: 
         return list(self._fila)
+
+
+    # metodo para o cli (opçoes 2, 3 e 4)
+
+    def descricao_de(self, conteudo_id: str) -> str | None:
+        conteudo = self._conteudos.get(conteudo_id)
+
+        if conteudo is None:
+            return None
+
+        return f"{conteudo['titulo']} - {conteudo['artista']} ({conteudo['tipo']})"
