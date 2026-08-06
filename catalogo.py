@@ -118,7 +118,7 @@ class Catalogo:
     def conteudo_na_posicao(self, usuario_id: str, posicao: int) -> str | None: 
         conteudo_playlist = self.playlist_de(usuario_id)
 
-        if (conteudo_playlist is None) or (posicao < 0) or (posicao > len(conteudo_playlist)):
+        if (conteudo_playlist is None) or (posicao < 0) or (posicao >= len(conteudo_playlist)):
             return None
 
         return conteudo_playlist[posicao]

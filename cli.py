@@ -69,8 +69,30 @@ TrilhaSonora
                 print(f"Posição {posicao} de {nome}: {catalogo.descricao_de(result)}")
 
         elif pedido == 4:
-            pass
+            nomes = input("Nome dos usuários separados por vírgula (ex.: Nicholas, Uchoa): ").split(",")
+            nomes = [nome.strip() for nome in nomes]
 
+            usuario_ids = []
+            for i in nomes:
+                usuarios = catalogo.buscar_usuario_por_nome(i)
+
+                if usuarios is None:
+                    print(f"Usuário {i} não encontrado")
+                    usuario_ids = None
+                    break
+                usuario_ids.append(usuarios)
+
+            if usuario_ids is not None:
+                intersecao = catalogo.intersecao_playlists(usuario_ids)
+
+                if not intersecao:
+                    print("Não foram encontradas interseções.")
+                else:
+                    print(f"Interseção ({len(intersecao)} conteúdos): ")
+                    for i in intersecao:
+                        print(f"- {catalogo.descricao_de(i)}")
+
+                
         elif pedido == 5:
             id_cont = input("ID do conteúdo (ex.: t000000): ")
 
