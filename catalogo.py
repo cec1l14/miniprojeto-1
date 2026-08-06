@@ -7,6 +7,7 @@ Esta é a peça central do projeto: carrega o JSON uma vez, constrói os
 import json
 from collections import deque
 
+
 '''
 Sujeiras:
     1. rating ausente
@@ -72,6 +73,10 @@ class Catalogo:
     def __init__(self, caminho_json: str):  
         with open(caminho_json, encoding="utf-8") as t:
             dados = json.load(t)
+
+        # criação do deque
+
+        self._fila = deque()
 
         self._conteudos = {}
         for i in dados["conteudos"]:
@@ -168,7 +173,7 @@ class Catalogo:
         if conteudo is None:
             return None
 
-        return sorted(conteudo.get("plataformas"), [])
+        return sorted(conteudo.get("plataformas", [])) # agora ta certo
         
 
 
@@ -196,15 +201,31 @@ class Catalogo:
         resultado = []
 
         for i in self._conteudos:
-            if genero in self._generos_de(i): # fazendo uso do método anterior
+            if genero in self.generos_de(i): # fazendo uso do método anterior
                 resultado.append(i)
 
-        return sorted(resultado)
+        return resultado
 
 
 
     # --- fila de reprodução ---
-    def enfileirar(self, conteudo_id: str) -> bool: ...
-    def proximo(self) -> str | None: ...
-    def fila_atual(self) -> list[str]: ...
 
+
+    def enfileirar(self, conteudo_id: str) -> bool: 
+        if conteudo_id not in self._conteudos:
+            return False
+
+        self._fila.append(conteudo_id)
+
+        return True
+
+    
+    def proximo(self) -> str | None: 
+        if not self._fila:
+            return None
+
+        return self._fila.popleft() 
+
+        
+    def fila_atual(self) -> list[str]: 
+        return list(self._fila)
