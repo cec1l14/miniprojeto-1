@@ -144,3 +144,5 @@ u01
 >>> print(c.conteudo_na_posicao("u01", 0))
 t000009
 ```
+
+Após isso, resolvi iniciar a elaboração de **cli.py**. Para tal, importei a classe Catalogo no início do arquivo, fiz uso de um **while True** e comecei a analisar cada opção individualmente.
