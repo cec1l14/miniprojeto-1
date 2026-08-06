@@ -3,6 +3,7 @@
 Esta é a peça central do projeto: carrega o JSON uma vez, constrói os
 índices no __init__ e expõe os 16 métodos que o main.py e o cli.py usam.
 """
+
 import json
 from collections import deque
 
@@ -92,9 +93,11 @@ class Catalogo:
             nomes.append(i["nome"])
 
         return sorted(nomes)
+
     
     def buscar_usuario_por_nome(self, nome: str) -> str | None: 
         return self._id_nome.get(nome.lower())
+
 
     def playlist_de(self, usuario_id: str) -> list[str] | None: 
         usuario = self._usuarios.get(usuario_id)
@@ -121,6 +124,7 @@ class Catalogo:
 
     # --- dados de um conteúdo ---
 
+
     def rating_de(self, conteudo_id: str) -> float | None: 
          conteudo = self._conteudos.get(conteudo_id)
 
@@ -130,7 +134,21 @@ class Catalogo:
          return verificar_rating(conteudo.get("rating"))
     
 
-    def duracao_total_de(self, conteudo_id: str) -> int | None: ...
+    def duracao_total_de(self, conteudo_id: str) -> int | None: 
+        conteudo = self._conteudos.get(conteudo_id)
+
+        if conteudo is None:
+            return None
+
+        if conteudo["tipo"] == "musica":
+            return conteudo["duracao_seg"]
+
+        soma_seg = 0
+
+        for i in conteudo["faixas"]:
+            soma_seg += limpar_duracao(i["duracao_seg"])
+
+        return soma_seg
         
 
 
@@ -144,9 +162,14 @@ class Catalogo:
         
 
 
-    def plataformas_de(self, conteudo_id: str) -> list[str] | None: ...
-        
+    def plataformas_de(self, conteudo_id: str) -> list[str] | None: 
+        conteudo = self._conteudos.get(conteudo_id)
 
+        if conteudo is None:
+            return None
+
+        return sorted(conteudo.get("plataformas"), [])
+        
 
 
     def data_adicionado_de(self, conteudo_id: str) -> str | None: 
@@ -158,10 +181,25 @@ class Catalogo:
         return limpar_data(conteudo.get("data_adicionado"))
 
 
-    def execucoes_de(self, conteudo_id: str) -> int | None: ...
+    def execucoes_de(self, conteudo_id: str) -> int | None: 
+        conteudo = self._conteudos.get(conteudo_id)
+
+        if conteudo is None:
+            return None
+
+        engajamento = conteudo.get("engajamento", {})
+
+        return limpar_execucoes(engajamento.get("execucoes"))
 
 
-    def conteudos_do_genero(self, genero: str) -> list[str]: ...
+    def conteudos_do_genero(self, genero: str) -> list[str]: 
+        resultado = []
+
+        for i in self._conteudos:
+            if genero in self._generos_de(i): # fazendo uso do método anterior
+                resultado.append(i)
+
+        return sorted(resultado)
 
 
 
