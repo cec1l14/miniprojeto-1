@@ -4,6 +4,9 @@ Uso: python cli.py catalogo_final.json
 """
 import sys
 from catalogo import Catalogo
+from collections import deque
+
+historico = deque(maxlen = 10)
 
 # função para opção 5
 
@@ -16,6 +19,7 @@ def conversao(segundos):
 catalogo = Catalogo(sys.argv[1])
 
 while True:
+
     print('''
 TrilhaSonora
 ============
@@ -28,6 +32,7 @@ TrilhaSonora
 7. Enfileirar conteúdo na fila de reprodução
 8. Tocar próximo da fila
 9. Ver fila atual
+10. Ver histórico
 0. Sair
 '''
           )
@@ -42,7 +47,7 @@ TrilhaSonora
         print("Fim.")
         break
         
-    elif (pedido < 1) or (pedido > 9):
+    elif (pedido < 1) or (pedido > 10):
         print("Opção inválida.")
 
     else: 
@@ -52,6 +57,8 @@ TrilhaSonora
 
             for i in catalogo.listar_usuarios():
                 print(i)
+
+            historico.append("Opção 1: listar todos os usuários")
 
         elif pedido == 2:
             nome = input("Nome do usuário: ")
@@ -66,6 +73,8 @@ TrilhaSonora
                 for i in range(len(playlist)):
                     playlist_nome = catalogo.descricao_de(playlist[i])
                     print(f"{i+1}. {playlist_nome}")
+
+            historico.append(f"Opção 2: playlist de {nome}")
 
         elif pedido == 3:
             nome = input("Nome do usuário: ")
@@ -87,6 +96,8 @@ TrilhaSonora
                     result = catalogo.conteudo_na_posicao(id_us, (posicao-1))
 
                     print(f"Posição {posicao} de {nome}: {catalogo.descricao_de(result)}")
+
+                historico.append(f"Opção 3: conteúdo na posição {posicao} da playlist")
 
         elif pedido == 4:
             nomes = input("Nome dos usuários separados por vírgula (ex.: Nicholas, Uchoa): ").split(",")
@@ -117,6 +128,8 @@ TrilhaSonora
                     for i in intersecao:
                         print(f"- {catalogo.descricao_de(i)}")
 
+            historico.append(f"Opção 4: interseção de playlists")
+                
                 
         elif pedido == 5:
             id_cont = input("ID do conteúdo (ex.: t000000): ")
@@ -135,6 +148,9 @@ TrilhaSonora
                 if catalogo.tipo_de(id_cont) == "musica":
                     print(f"execuções: {catalogo.execucoes_de(id_cont)}")
 
+            historico.append(f"Opção 5: dados de um conteúdo")
+        
+
         elif pedido == 6:
             genero = input("Gênero (ex.: Pop): ")
 
@@ -145,6 +161,9 @@ TrilhaSonora
 
             for i in conteudo_g:
                 print(f"- {catalogo.descricao_de(i)}")
+
+            historico.append(f"Opção 6: conteúdo de um gênero")
+            
     
         elif pedido == 7:
             id_fila = input("ID do conteúdo para enfileirar (ex.: t000000): ")
@@ -155,6 +174,9 @@ TrilhaSonora
             else:
                 print(f"Id {id_fila} não encontrado — nada foi enfileirado.")
 
+            historico.append(f"Opção 7: enfileirar conteúdo da fila de reprodução")
+            
+
         elif pedido == 8:
             musica = catalogo.proximo()
 
@@ -164,7 +186,8 @@ TrilhaSonora
                 print(f"Tocando: {catalogo.descricao_de(musica)}")
                 print(f"Restam {len(catalogo.fila_atual())} itens na fila.")
 
-
+            historico.append(f"Opção 8: tocar próximo da fila")
+            
         elif pedido == 9:
             fila = catalogo.fila_atual()
 
@@ -173,3 +196,13 @@ TrilhaSonora
             else:
                 for i in range(len(fila)):
                     print(f"{i+1}. {catalogo.descricao_de(fila[i])}")
+
+            historico.append(f"Opção 9: ver fila atual")
+
+        elif pedido == 10:
+            if not historico:
+                print("Histórico vazio.")
+
+            else:
+                for i in historico:
+                    print(f"- {i}")
