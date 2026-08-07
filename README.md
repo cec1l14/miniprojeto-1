@@ -1,17 +1,14 @@
 # Mini-Projeto TrilhaSonora
 
-> **Entrega: sexta-feira, 07/08/2026.**
-> Link do repositório no formulário de entrega da aula 09:
-> **<https://www.otrilha.com/aulas/09>**. Só o link, nada de zip, nada de email.
+## Decisões de modelagem
 
-Vocês vão construir um analisador do catálogo da **TrilhaSonora**, uma
-plataforma fictícia de streaming musical. O resultado é um produto de verdade:
-uma classe que modela o catálogo, um menu interativo no terminal e um modo
-batch que responde 10 mil consultas de uma vez.
+Optei pela criação apenas de uma classe no projeto: **Catalogo**. Isso se justifica porque o projeto exige funções de limpeza reutilizáveis para **Musica**, **Album** e **Usuario**, ou seja, funções que processam um dado valor e retornam outro, sem precisar guardar estado próprio. Quanto à estruturação de **Catalogo**, esta classe foi construída a partir de dicionários (para `conteudo` e `usuario`), haja vista que eles deixam uma busca muito mais barata computacionalmente e algumas funções auxiliares (que atuam em algumas limpezas descritas). Além disso, também se faz uso de uma fila (importada de colletions) para facilitar a elaboração dos três últimos métodos obrigatórios de **Catalogo** (enfileirar, proximo, fila_atual).
 
----
+### Qual método não consegue ser indexado?
 
-## Minhas explicações
+Imagino que seja intersecao_playlists, uma vez que é o único método recebe uma lista de ids e com uma quantidade de combinações absurda. Como há 33 usuários registrados nos arquivos de análise, haveria 2^33 subconjuntos para serem pré-computados, algo totalmente inviável.
+
+## Comentários ao longo da execução
 
 Inicialmente, como solicitado, coloquei em "catalogo.py" a classe Catálogo e os métodos obrigatórios
 de análise. Após isso, resolvi tratar os 7 problemas de limpeza presente no json. Para tal, criei 
@@ -168,3 +165,17 @@ Além disso, percebi também a existência de um módulo para saber o tipo de da
 
         return conteudo["tipo"]
 ```
+
+## Referências
+
+CODECADEMY. Python | Deque | .popleft(). [S. l.], 23 out. 2025. Disponível
+em: https://www.codecademy.com/resources/docs/python/deque/popleft.
+Acesso em: 5 ago. 2026.
+
+GEEKSFORGEEKS. How to use sys.argv in Python. [S. l.], [2025?]. Disponível
+em: https://www.geeksforgeeks.org/python/how-to-use-sys-argv-in-python/.
+Acesso em: 5 ago. 2026.
+
+REAL PYTHON. getattr() | Python's Built-in Functions. [S. l.], [20--?].
+Disponível em: https://realpython.com/ref/builtin-functions/getattr/.
+Acesso em: 6 ago. 2026.
