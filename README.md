@@ -149,7 +149,6 @@ Após isso, resolvi iniciar a elaboração de **cli.py**. Para tal, importei a c
 
 Retomando **catalogo.py**, resolvi criar um método à parte (também recomendado pelas instruções da atividade) para converter o id em uma descrição compreensível para o usuário.
 ```python
-
 def descricao_de(self, conteudo_id: str) -> str | None:
     conteudo = self._conteudos.get(conteudo_id)
 
@@ -157,4 +156,15 @@ def descricao_de(self, conteudo_id: str) -> str | None:
         return None
 
     return f"{conteudo['titulo']} - {conteudo['artista']} ({conteudo['tipo']})"
+```
+
+Além disso, percebi também a existência de um módulo para saber o tipo de dado a partir de um id (especificamente para a opção 5 do cli). Dessa forma, fiz, em **catalogo.py**:
+```python
+    def tipo_de(self, conteudo_id: str) -> str | None: 
+        conteudo = self._conteudos.get(conteudo_id)
+
+        if conteudo is None:
+            return None
+
+        return conteudo["tipo"]
 ```

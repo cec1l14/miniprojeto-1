@@ -5,6 +5,14 @@ Uso: python cli.py catalogo_final.json
 import sys
 from catalogo import Catalogo
 
+# função para opção 5
+
+def conversao(segundos):
+    min = segundos//60
+    resto_seg = segundos % 60
+
+    return f"{min}m{resto_seg}s"
+
 catalogo = Catalogo(sys.argv[1])
 
 while True:
@@ -23,7 +31,12 @@ TrilhaSonora
 0. Sair
 '''
           )
-    pedido = int(input("> "))
+    pedido = (input("> "))
+    if not pedido.isdigit():
+        print("Opção inválida.")
+        continue
+
+    pedido = int(pedido)
 
     if (pedido == 0):
         print("Fim.")
@@ -48,6 +61,8 @@ TrilhaSonora
                 print("Usuário não encontrado.")
             else:
                 playlist = catalogo.playlist_de(usuario_id)
+                print(f"Playlist de {nome} ({len(playlist)} itens): ")
+
                 for i in range(len(playlist)):
                     playlist_nome = catalogo.descricao_de(playlist[i])
                     print(f"{i+1}. {playlist_nome}")
@@ -62,24 +77,34 @@ TrilhaSonora
                 playlist = catalogo.playlist_de(id_us)
                 print(f"Playlist de {nome} tem {len(playlist)} itens (posições de 1 a {len(playlist)}).")
 
-                posicao = int(input("Posição: ")) 
+                posicao = input("Posição: ")
 
-                result = catalogo.conteudo_na_posicao(id_us, (posicao-1))
+                if (not posicao.isdigit()) or (int(posicao) < 1) or (int(posicao) > len(playlist)):
+                    print("Posição inválida.")
 
-                print(f"Posição {posicao} de {nome}: {catalogo.descricao_de(result)}")
+                else:
+                    posicao = int(posicao)
+                    result = catalogo.conteudo_na_posicao(id_us, (posicao-1))
+
+                    print(f"Posição {posicao} de {nome}: {catalogo.descricao_de(result)}")
 
         elif pedido == 4:
             nomes = input("Nome dos usuários separados por vírgula (ex.: Nicholas, Uchoa): ").split(",")
             nomes = [nome.strip() for nome in nomes]
+
+            if (len(nomes) == 1):
+                print("Informe pelo menos 2 usuários.")
+                continue
 
             usuario_ids = []
             for i in nomes:
                 usuarios = catalogo.buscar_usuario_por_nome(i)
 
                 if usuarios is None:
-                    print(f"Usuário {i} não encontrado")
+                    print(f"Usuário(s) não encontrado(s).")
                     usuario_ids = None
                     break
+
                 usuario_ids.append(usuarios)
 
             if usuario_ids is not None:
@@ -96,27 +121,39 @@ TrilhaSonora
         elif pedido == 5:
             id_cont = input("ID do conteúdo (ex.: t000000): ")
 
-            print(f"rating: {catalogo.rating_de(id_cont)}")
-            print(f"duração: {catalogo.duracao_total_de(id_cont)}")
-            print(f"gêneros: {catalogo.generos_de(id_cont)}")
-            print(f"plataformas: {catalogo.plataformas_de(id_cont)}")
-            print(f"adicionado: {catalogo.data_adicionado_de(id_cont)}")
-            print(f"execuções: {catalogo.execucoes_de(id_cont)}")
+            if catalogo.descricao_de(id_cont) is None:
+                print("Conteúdo não encontrado.")
+
+            else:  
+                print(catalogo.descricao_de(id_cont))
+                print(f"rating: {catalogo.rating_de(id_cont)}")
+                print(f"duração: {conversao(catalogo.duracao_total_de(id_cont))}")
+                print(f"gêneros: {', '.join(catalogo.generos_de(id_cont))}")
+                print(f"plataformas: {', '.join(catalogo.plataformas_de(id_cont))}")
+                print(f"adicionado: {catalogo.data_adicionado_de(id_cont)}")
+
+                if catalogo.tipo_de(id_cont) == "musica":
+                    print(f"execuções: {catalogo.execucoes_de(id_cont)}")
 
         elif pedido == 6:
             genero = input("Gênero (ex.: Pop): ")
 
             conteudo_g = catalogo.conteudos_do_genero(genero)
 
+            if not conteudo_g:
+                print("Nenhum conteúdo nesse gênero.")
+
             for i in conteudo_g:
-                print(f"- {i}")
+                print(f"- {catalogo.descricao_de(i)}")
     
         elif pedido == 7:
             id_fila = input("ID do conteúdo para enfileirar (ex.: t000000): ")
             resultado = catalogo.enfileirar(id_fila)
 
             if resultado:
-                print(f"Enfileirado: {catalogo.descricao_de(id_fila)}")
+                print(f"Enfileirado: {catalogo.descricao_de(id_fila)} (fila com {len(catalogo.fila_atual())} itens)")
+            else:
+                print(f"Id {id_fila} não encontrado — nada foi enfileirado.")
 
         elif pedido == 8:
             musica = catalogo.proximo()
@@ -125,6 +162,7 @@ TrilhaSonora
                 print("Fila vazia.")
             else:
                 print(f"Tocando: {catalogo.descricao_de(musica)}")
+                print(f"Restam {len(catalogo.fila_atual())} itens na fila.")
 
 
         elif pedido == 9:
@@ -133,5 +171,5 @@ TrilhaSonora
             if not fila:
                 print("Fila vazia.")
             else:
-                for i in fila:
-                    print(catalogo.descricao_de(i))
+                for i in range(len(fila)):
+                    print(f"{i+1}. {catalogo.descricao_de(fila[i])}")

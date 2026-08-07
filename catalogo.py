@@ -246,7 +246,7 @@ class Catalogo:
         return list(self._fila)
 
 
-    # metodo para o cli (opçoes 2, 3 e 4)
+    # metodos para o cli 
 
     def descricao_de(self, conteudo_id: str) -> str | None:
         conteudo = self._conteudos.get(conteudo_id)
@@ -255,3 +255,13 @@ class Catalogo:
             return None
 
         return f"{conteudo['titulo']} - {conteudo['artista']} ({conteudo['tipo']})"
+
+    def tipo_de(self, conteudo_id: str) -> str | None: 
+        conteudo = self._conteudos.get(conteudo_id)
+
+        if conteudo is None:
+            return None
+
+        return conteudo["tipo"]
+
+    
