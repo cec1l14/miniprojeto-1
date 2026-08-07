@@ -220,7 +220,7 @@ class Catalogo:
             if genero in self.generos_de(i): # fazendo uso do método anterior
                 resultado.append(i)
 
-        return resultado
+        return sorted(resultado)
 
 
     # --- fila de reprodução ---
@@ -263,5 +263,3 @@ class Catalogo:
             return None
 
         return conteudo["tipo"]
-
-    
